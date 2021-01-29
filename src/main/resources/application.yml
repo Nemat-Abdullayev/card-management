@@ -1,0 +1,25 @@
+cm:
+  root:
+    user: user
+    order: order
+
+jwt:
+  secret: guavapaySecret
+  expiration: 900_000
+  header: Authorization
+  route:
+    authentification:
+      path: authenticate
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:memDb;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+  h2:
+    console:
+      enabled: true
+      path: /h2
