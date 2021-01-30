@@ -44,11 +44,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         web.ignoring().mvcMatchers("/swagger-ui.html/**", "/configuration/**", "/swagger-resources/**", "/v2/api-docs", "/webjars/**");
     }
 
-//    @Bean
-//    protected void configure(AuthenticationManagerBuilder builder) throws Exception {
-//        builder.userDetailsService(customUserDetailsService);
-//    }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return NoOpPasswordEncoder.getInstance();

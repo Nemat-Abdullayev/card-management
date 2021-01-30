@@ -33,6 +33,7 @@ public class OrderController {
     private final JwtTokenUtil jwtTokenUtil;
     private final UserService userService;
 
+
     public OrderController(@Value("${jwt.header}") String jwtHeader,
                            OrderService orderService,
                            JwtTokenUtil jwtTokenUtil,
@@ -47,8 +48,8 @@ public class OrderController {
     @ApiOperation("create order by authentication token")
     public ResponseEntity<?> createOder(@RequestBody OrderRequest orderRequest, HttpServletRequest request) {
         User verifiedUser = userService.findUserByUserName(getUserNameFromHttpServletRequest(request));
-        Order order = OrderMapper.INSTANCE.mapToEntity(orderRequest, verifiedUser);
-        return ResponseEntity.ok(orderService.saveOrder(order));
+        return ResponseEntity.ok(
+                orderService.saveOrder(OrderMapper.INSTANCE.mapToEntity(orderRequest, verifiedUser)));
     }
 
     @GetMapping("/get-orders")
@@ -119,13 +120,15 @@ public class OrderController {
         Order order = orderList.stream().filter(
                 orderFromDb -> orderFromDb.getId().equals(orderId)).findAny().get();
         if (!order.getStatus().equals(OrderStatus.CONFIRMED)) {
+            OrderConfirmationResponse orderConfirmationResponse = OrderConfirmationResponse.builder()
+                    .accountNumber(new AccountNumberUtil().generateAccountNumber())
+                    .cardNumber(new CardNumberUtil().generateCardNumber())
+                    .httpStatus(HttpStatus.OK)
+                    .build();
             order.setStatus(OrderStatus.CONFIRMED);
+            order.setAccountNumber(orderConfirmationResponse.getAccountNumber());
+            order.setCardNumber(orderConfirmationResponse.getCardNumber());
             if (Objects.nonNull(orderService.saveOrder(order))) {
-                OrderConfirmationResponse orderConfirmationResponse = OrderConfirmationResponse.builder()
-                        .accountNumber(new AccountNumberUtil().generateAccountNumber())
-                        .cardNumber(new CardNumberUtil().generateCardNumber())
-                        .httpStatus(HttpStatus.OK)
-                        .build();
                 return ResponseEntity.ok(orderConfirmationResponse);
             } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The order was not confirmed");

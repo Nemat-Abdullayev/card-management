@@ -24,7 +24,8 @@ public abstract class OrderMapper {
             @Mapping(target = "codeWord", source = "request.codeWord"),
             @Mapping(target = "user", source = "user"),
     })
-
+    void setname() {
+    }
 
     public abstract Order mapToEntity(OrderRequest request, User user);
 
@@ -34,6 +35,8 @@ public abstract class OrderMapper {
             @Mapping(target = "orderCreationTime", source = "order.regDate"),
             @Mapping(target = "status", source = "order.status"),
     })
+    void setname1() {
+    }
 
     public abstract OrderDTO mapResponse(Order order);
 
@@ -45,6 +48,8 @@ public abstract class OrderMapper {
             @Mapping(target = "codeWord", source = "updateRequest.codeWord"),
             @Mapping(target = "user", source = "user"),
     })
+    void setname2() {
+    }
 
     public abstract Order mapToEntity(OrderUpdateRequest updateRequest, User user);
 }
